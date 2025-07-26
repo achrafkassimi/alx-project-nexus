@@ -1,2 +1,227 @@
-# alx-project-nexus
-Learners will create a GitHub repository named alx-project-nexus that serves as a documentation hub for their major learnings from the ProDev Backend Engineering program. This repository will showcase their understanding of backend engineering concepts, tools, and best practices.
+
+# 🧠 Social Media Feed Backend – ProDev BE
+
+## 🚀 Overview
+
+This project is a full-stack social media backend built with Django and GraphQL, featuring real-time chat, notifications, and user interactions (likes, comments). It also includes a simple Bootstrap frontend for both user and admin interfaces. The backend is optimized for scalability and advanced querying.
+
+---
+
+## 🎯 Project Goals
+
+- Build a scalable GraphQL-based social media backend.
+- Enable flexible querying for posts and user interactions.
+- Integrate real-time features like notifications and chat.
+- Design a responsive Bootstrap frontend for users and admins.
+
+---
+
+## 🛠️ Technologies Used
+
+| Component         | Technology             |
+|------------------|------------------------|
+| Backend           | Django, GraphQL (Graphene) |
+| Database          | PostgreSQL             |
+| Realtime Layer    | Django Channels + Redis |
+| Auth              | JWT (django-graphql-jwt) |
+| Frontend (UI)     | HTML/CSS + Bootstrap   |
+| Testing & API     | GraphQL Playground     |
+| Deployment        | Render / Railway / etc. |
+
+---
+
+## 📁 Project Structure
+
+```bash
+socialmedia/
+├── feed/              # Main app (posts, comments, likes, notifications)
+├── users/             # Custom user model
+├── chat/              # Real-time messaging
+├── templates/         # HTML templates (Bootstrap)
+├── static/            # CSS/JS files
+├── socialmedia/       # Project settings and routing
+├── schema.py          # GraphQL root schema
+├── routing.py         # WebSocket routing
+├── asgi.py            # ASGI server setup for Channels
+├── requirements.txt   # Python dependencies
+```
+
+---
+
+## 📦 Features
+
+### ✅ Post Management
+- Create, update, and delete posts
+- Like and comment on posts
+- View all posts with full interaction data
+
+### 🔁 Interactions & Notifications
+- Real-time likes/comments generate notifications
+- Notifications are marked read/unread
+- Notifications are received instantly via WebSocket
+
+### 💬 Chat System (Real-Time)
+- Send/receive messages instantly
+- One-to-one messaging via WebSockets
+- Stores full chat history
+
+### 👥 User System
+- Register/Login via JWT
+- Admin and regular user roles
+- Admin dashboard to manage content
+
+### 🧪 GraphQL API
+- Queries: fetch posts, comments, notifications, messages
+- Mutations: createPost, addComment, likePost, sendMessage
+- Authenticated endpoints using JWT
+
+---
+
+## 🔨 Setup & Installation
+
+1. **Clone the repo:**
+```bash
+git clone https://github.com/yourname/socialmedia-backend.git
+cd socialmedia-backend
+```
+
+2. **Create virtual environment:**
+```bash
+python -m venv venv
+source venv/bin/activate
+```
+
+3. **Install dependencies:**
+```bash
+pip install -r requirements.txt
+```
+
+4. **Configure PostgreSQL in `settings.py`**
+
+5. **Run migrations and create superuser:**
+```bash
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+6. **Start development server:**
+```bash
+python manage.py runserver
+```
+
+---
+
+## 🌐 WebSocket Setup (Chat & Notifications)
+
+1. **Install Redis server locally:**
+```bash
+sudo apt install redis
+redis-server
+```
+
+2. **Install Channels & configure:**
+```bash
+pip install channels channels-redis
+```
+
+3. **Add to `settings.py`:**
+```python
+ASGI_APPLICATION = "socialmedia.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+```
+
+---
+
+## 🧪 API Testing
+
+- Access GraphQL Playground at:
+```
+http://localhost:8000/graphql/
+```
+
+- Use headers:
+```json
+{
+  "Authorization": "JWT <your_token>"
+}
+```
+
+---
+
+## 📌 Key GraphQL Operations
+
+### Queries
+- `allPosts`
+- `post(id)`
+- `comments(postId)`
+- `notifications`
+- `messages(userId)`
+
+### Mutations
+- `createPost(title, content)`
+- `addComment(postId, content)`
+- `likePost(postId)`
+- `sendMessage(toUserId, content)`
+- `markNotificationAsRead(id)`
+
+---
+
+## 🧰 Admin Panel
+
+- URL: `http://localhost:8000/admin/`
+- Manage users, posts, comments, and site data
+
+---
+
+## 👨‍🎨 Frontend Pages (Bootstrap)
+
+| Page | Description |
+|------|-------------|
+| Home | Feed with posts, like/comment buttons |
+| Post Detail | View post + comments |
+| Notifications | List unread notifications |
+| Chat | Real-time chat interface |
+| Admin Dashboard | Manage content, view stats |
+
+---
+
+## 📌 Git Commit Workflow
+
+| Type | Description |
+|------|-------------|
+| `feat:` | New feature (e.g., `feat: add comment mutation`) |
+| `fix:` | Bug fix |
+| `perf:` | Performance improvement |
+| `docs:` | Documentation update |
+| `refactor:` | Code refactor |
+| `test:` | Adding or updating tests |
+
+---
+
+## ✅ To Do List
+
+- [x] Setup Django + PostgreSQL + GraphQL
+- [x] Build Post, Like, Comment models
+- [x] Implement GraphQL API with queries/mutations
+- [x] Add real-time notifications using Channels
+- [x] Integrate one-to-one real-time chat
+- [x] Create basic Bootstrap frontend
+- [ ] Add deployment scripts & environment configs
+- [ ] Write unit tests and finalize docs
+
+---
+
+## 📬 Contact
+
+For questions or collaboration, contact [achraf.kassimi.1995@gmail.com](mailto:achraf.kassimi.1995@gmail.com)
+
+---
