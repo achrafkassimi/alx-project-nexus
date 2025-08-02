@@ -238,3 +238,11 @@ For questions or collaboration, contact [achraf.kassimi.1995@gmail.com](mailto:a
 pip install django
 python.exe -m pip install --upgrade pip
 ⦁   pip freeze > requirements.txt
+python manage.py startapp feed == >  But: Regrouper les modèles des posts, likes, commentaires, etc
+
+
+
+
+
+
+
