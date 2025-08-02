@@ -268,13 +268,85 @@ Email address: achraf@gmail.com
 Password: 1234
 Password (again): 1234
 
+-----------------------
+✅ 🗓 Jour 1 – Initialisation du Projet
+🎯 Objectifs :
+Créer et configurer le projet Django avec PostgreSQL
+
+Créer l'app user avec modèle CustomUser
+
+Définir les bases du projet (venv, git, config)
+
+📌 Étapes réalisées :
+django-admin startproject socialmedia_backend
+
+Création du virtualenv et installation de Django + psycopg2
+
+Configuration PostgreSQL dans settings.py
+
+Création de l'app user
+
+Définition du modèle CustomUser (is_admin, hérite de AbstractUser)
+
+Ajout de AUTH_USER_MODEL = 'user.CustomUser' dans settings.py
+
+Enregistrement de l'app user dans INSTALLED_APPS
+
+Migrations et création du superuser
+
+Initialisation de Git et 1er commit feat: setup project with custom user
+
+✅ 🗓 Jour 2 – Modélisation des données sociales
+🎯 Objectifs :
+Créer l'app feed et modéliser :
+
+Post
+
+Comment
+
+Like
+
+Message
+
+Notification
+
+Préparer le schéma de base pour interactions sociales
+
+📌 Étapes réalisées :
+Création de l’app feed
+
+Suppression de l’ancienne app social (si existante)
+
+Création des modèles dans feed/models.py
+
+Importation depuis user.models.CustomUser
+
+Création du schéma UML (SocialMediaFeed_UML.png)
+
+Lancement des migrations
+
+Ajout du modèle au admin.py si besoin
+
+Commit Git : feat: add post, comment, like, message, notification models
+-----------------------
+
+username 'test17'
+email	 'hhhhh@gmail.com'
+password1	 'Achraf12-'
+password2	 'Achraf12-'
 
 
+username	 'tras'
+email	 'tras@gmail.com'
+password1	 'Achraf12-'
+password2	 'Achraf12-'
 
 
+username	 'koko'
+email	 'koko@gmail.com'
+password1	 'Achraf12-'
+password2	 'Achraf12-'
 
-
-
-
+User momo registered successfully with password: Achraf12-
 
 
