@@ -241,7 +241,14 @@ python.exe -m pip install --upgrade pip
 python manage.py startapp feed == >  But: Regrouper les modèles des posts, likes, commentaires, etc
 
 
+python manage.py makemigrations
+python manage.py migrate
 
+
+pip install graphene-django django-graphql-jwt channels channels-redis
+graphene-django: pour GraphQL
+django-graphql-jwt: auth via JWT
+channels & channels-redis: WebSocket pour le chat/notifications
 
 
 
