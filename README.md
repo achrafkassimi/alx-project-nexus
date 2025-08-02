@@ -250,6 +250,7 @@ graphene-django: pour GraphQL
 django-graphql-jwt: auth via JWT
 channels & channels-redis: WebSocket pour le chat/notifications
 
+python manage.py startapp users
 
 
 

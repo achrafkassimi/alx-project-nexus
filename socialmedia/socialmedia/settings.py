@@ -38,6 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'feed',  # Custom app for handling feeds and posts
+    'users',  # Custom app for user management
+    # 'graphene_django',  # GraphQL support
+    # 'graphql_jwt.refresh_token.apps.RefreshTokenConfig',  # JWT refresh token support
+    # 'graphql_jwt',  # JWT authentication support
 ]
 
 MIDDLEWARE = [
@@ -51,6 +55,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'socialmedia.urls'
+AUTH_USER_MODEL = 'users.CustomUser'
+
 
 TEMPLATES = [
     {
