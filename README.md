@@ -251,6 +251,30 @@ django-graphql-jwt: auth via JWT
 channels & channels-redis: WebSocket pour le chat/notifications
 
 python manage.py startapp users
+python manage.py startapp social
+
+project/
+│
+├── users/
+│   └── models.py → CustomUser
+│
+├── social/
+│   └── models.py → Post, Comment, Like, Message, Notification
+│
+└── settings.py → AUTH_USER_MODEL = 'users.CustomUser'
+
+Username: achraf
+Email address: achraf@gmail.com
+Password: 1234
+Password (again): 1234
+
+
+
+
+
+
+
+
 
 
 
