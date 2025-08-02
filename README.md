@@ -225,3 +225,16 @@ http://localhost:8000/graphql/
 For questions or collaboration, contact [achraf.kassimi.1995@gmail.com](mailto:achraf.kassimi.1995@gmail.com)
 
 ---
+
+## in CMD (Command) or Powershell run this code, it works fine:
+- validation
+⦁	python -m django --help
+- start a new project
+⦁	python -m django startproject socialmedia
+
+⦁   python -m venv venv 
+⦁   cd venv
+⦁   .\Scripts\activate
+pip install django
+python.exe -m pip install --upgrade pip
+⦁   pip freeze > requirements.txt
