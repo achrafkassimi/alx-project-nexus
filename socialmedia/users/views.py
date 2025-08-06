@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from .forms import RegisterForm, LoginForm
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect
+from feed.models import Post
 
 
 def register_view(request):
@@ -47,3 +49,24 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('users:login')
+
+
+@login_required
+def profile_view(request):
+    user = request.user
+    posts = Post.objects.filter(author=user).order_by('-created_at')
+
+    context = {
+        'profile_user': user,
+        'posts': posts,
+    }
+    return render(request, 'users/profile.html', context)
+
+@login_required
+def delete_post_view(request, post_id):
+    post = get_object_or_404(Post, id=post_id, author=request.user)
+    if request.method == 'POST':
+        post.delete()
+        messages.success(request, "Post deleted successfully.")
+        return redirect('users:profile')
+    return render(request, 'users/confirm_delete.html', {'post': post})

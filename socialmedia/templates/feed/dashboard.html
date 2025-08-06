@@ -2,30 +2,56 @@
 
 {% block content %}
 <div class="container mt-4">
-  <h2>Welcome, {{ user.username }} 🎉</h2>
-  
-  <hr>
 
-  <h4>All Posts:</h4>
-  {% for post in posts %}
-    <div class="card mb-3">
-      <div class="card-header">
-        {{ post.author.username }} - {{ post.created_at|date:"d M Y H:i" }}
-      </div>
-      <div class="card-body">
-        <p class="card-text">{{ post.content }}</p>
+  <!-- Navbar with Search, Chat Icon, Profile Dropdown -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light rounded mb-4">
+    <div class="container-fluid">
+      <!-- Search Bar -->
+      <form class="d-flex" method="GET" action="{% url 'feed:dashboard' %}">
+        <input class="form-control me-2" type="search" name="q" placeholder="Search posts or users" aria-label="Search" value="{{ request.GET.q }}">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+
+      <!-- Chat Icon -->
+      <a href="#" class="btn btn-outline-primary ms-3" title="Chat">
+          <i class="bi bi-chat-dots"></i> <!-- Bootstrap Icons -->
+      </a>
+
+      <!-- Profile Dropdown -->
+      <div class="dropdown ms-3">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-circle"></i> {{ user.username }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+          <li><a class="dropdown-item" href="{% url 'users:profile' %}">View Profile</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="{% url 'users:logout' %}">Logout</a></li>
+        </ul>
       </div>
     </div>
-  {% empty %}
-    <p>No posts available yet.</p>
-  {% endfor %}
-</div>
+  </nav>
 
-<div class="card">
-  <div class="card-body">
-    <h3 class="card-title">Welcome, {{ users.username }} 👋</h3>
-    <p>Email: {{ user.email }}</p>
-    <a href="{% url 'users:logout' %}" class="btn btn-danger mt-3">Logout</a>
-  </div>
+  <!-- Posts List -->
+  <h3>All Posts</h3>
+
+  {% if posts %}
+    {% for post in posts %}
+      <div class="card mb-3">
+        <div class="card-header">
+          <strong>{{ post.author.username }}</strong> 
+          <small class="text-muted">{{ post.created_at|date:"d M Y, H:i" }}</small>
+        </div>
+        <div class="card-body">
+          <p class="card-text">{{ post.content }}</p>
+          <!-- Like and Comment Buttons (placeholders) -->
+          <button class="btn btn-sm btn-outline-primary me-2">Like</button>
+          <button class="btn btn-sm btn-outline-secondary">Comment</button>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No posts available.</p>
+  {% endif %}
+
 </div>
 {% endblock %}

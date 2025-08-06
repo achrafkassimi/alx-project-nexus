@@ -245,6 +245,31 @@ python manage.py makemigrations
 python manage.py migrate
 
 
+----
+Server [localhost]: localhost
+Database [postgres]: socialdb
+Port [5432]: 5432
+Username [postgres]: postgres
+1234
+----
+socialdb=# \dt liste of table li kaynin f la base
+
+socialdb=# \d+ users_customuser description ta3 table les Colonnes 
+
+Common psql Meta-commands:
+\l or \list: Lists all available databases. Use \l+ for more details.
+\c <database_name> or \connect <database_name>: Connects to a different database.
+\dt: Lists all tables in the current database. Other similar commands include \di (indexes), \dv (views), \ds (sequences), \df (functions), \du (users).
+\d <table_name>: Describes the structure of a specific table, including columns, types, and indexes.
+\dn: Lists all schemas.
+\s: Displays command history.
+\o <file_name>: Redirects query output to a file.
+\i <file_name>: Executes commands from a specified file.
+\timing: Toggles the display of query execution time.
+\q: Exits the psql shell.
+\?: Displays a list of all psql meta-commands.
+\h <SQL_command>: Provides syntax help for a specific SQL command (e.g., \h SELECT).
+----
 pip install graphene-django django-graphql-jwt channels channels-redis
 graphene-django: pour GraphQL
 django-graphql-jwt: auth via JWT
@@ -350,3 +375,40 @@ password2	 'Achraf12-'
 User momo registered successfully with password: Achraf12-
 
 
+--> nzido 
+jwt
+page admin en global = liste user ... statistic
+session
+cokise
+verification ta3 user wach connecte wla la
+page 404
+
+ ----------------
+For Windows:
+Command Prompt (CMD).
+Code
+
+    your_venv_name\Scripts\activate.bat
+PowerShell.
+Code
+
+    your_venv_name\Scripts\Activate.ps1
+Git Bash or other Unix-like shells:
+Code
+
+    source your_venv_name/Scripts/activate
+For macOS and Linux:
+Bash, Zsh, or other Unix-like shells:
+Code
+
+    source your_venv_name/bin/activate
+ ----------------
+
+
+ # 1.Users
+user1 = CustomUser.objects.create_user(username="kassimi", email="kassimi@example.com", password="testpass123")
+user2 = CustomUser.objects.create_user(username="fatima", email="fatima@example.com", password="pass456")
+
+Post.objects.create(author=user1, content="Salam 3likom! Hadhi awel post dyali 😊")
+Post.objects.create(author=user2, content="J'aime ce projet Django ❤️")
+Post.objects.create(author=user1, content="Kanbni la recherche tatmchi mzyan! 👀")
