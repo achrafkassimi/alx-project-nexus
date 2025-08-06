@@ -73,3 +73,21 @@ def delete_comment(request, comment_id):
         comment.delete()
 
     return redirect('feed:dashboard')
+
+
+@login_required(login_url='login')
+def edit_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    # فقط صاحب التعليق يقدر يحررو
+    if request.user != comment.author:
+        return redirect('feed:dashboard')
+
+    if request.method == 'POST':
+        new_content = request.POST.get('content')
+        if new_content:
+            comment.content = new_content
+            comment.save()
+            return redirect('feed:dashboard')
+
+    return render(request, 'feed/edit_comment.html', {'comment': comment})

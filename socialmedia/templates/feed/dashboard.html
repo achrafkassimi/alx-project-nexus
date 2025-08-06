@@ -63,8 +63,19 @@
             <div class="d-flex justify-content-between">
               <p><strong>{{ comment.author.username }}:</strong> {{ comment.content }}</p>
               {% if comment.author == user %}
-                <a href="{% url 'feed:delete_comment' comment.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                <div class="d-flex gap-2">
+                  <!-- Edit icon -->
+                  <a href="{% url 'feed:edit_comment' comment.id %}" class="text-warning" title="Edit">
+                    <i class="bi bi-pencil-square"></i>
+                  </a>
+                  
+                  <!-- Delete icon -->
+                  <a href="{% url 'feed:delete_comment' comment.id %}" class="text-danger" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </div>
               {% endif %}
+            
             </div>
           {% endfor %}
 
