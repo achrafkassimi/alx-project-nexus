@@ -8,6 +8,9 @@ from feed.models import Post
 
 
 def register_view(request):
+    if request.user.is_authenticated:
+        return redirect('feed:dashboard')
+    
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -32,6 +35,9 @@ def register_view(request):
 
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('feed:dashboard')  # ولا أي صفحة بغيتي توصل ليها
+    
     if request.method == 'POST':
         form = LoginForm(data=request.POST)
         if form.is_valid():
@@ -51,7 +57,7 @@ def logout_view(request):
     return redirect('users:login')
 
 
-@login_required
+@login_required(login_url='login')
 def profile_view(request):
     user = request.user
     posts = Post.objects.filter(author=user).order_by('-created_at')
@@ -62,7 +68,7 @@ def profile_view(request):
     }
     return render(request, 'users/profile.html', context)
 
-@login_required
+@login_required(login_url='login')
 def delete_post_view(request, post_id):
     post = get_object_or_404(Post, id=post_id, author=request.user)
     if request.method == 'POST':

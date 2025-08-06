@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Post
 from django.db.models import Q
 
-@login_required
+@login_required(login_url='login')
 def dashboard_view(request):
     query = request.GET.get('q')
     if query:

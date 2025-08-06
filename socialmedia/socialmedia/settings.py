@@ -156,3 +156,6 @@ AUTHENTICATION_BACKENDS = [
 
 LOGIN_REDIRECT_URL = '/feed/dashboard/'
 LOGOUT_REDIRECT_URL = '/user/login/'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'feed:dashboard'

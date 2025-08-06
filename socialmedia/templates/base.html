@@ -15,12 +15,33 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
       <a class="navbar-brand" href="/">SocialApp</a>
-      <div>
+      <!-- <div>
         {% if user.is_authenticated %}
-          <span class="navbar-text text-white me-3">Hi, {{ users.username }}</span>
+          <span class="navbar-text text-white me-3">Hi, {{ user.username }}</span>
           <a href="{% url 'users:logout' %}" class="btn btn-outline-light btn-sm">Logout</a>
         {% endif %}
+      </div> -->
+      
+      <!-- Profile Dropdown -->
+      {% if user.is_authenticated %}
+      <div class="dropdown ms-3">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="profileDropdown"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-circle"></i> {{ user.username }} <!-- Bootstrap Icons -->
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+          <li><a class="dropdown-item" href="{% url 'users:profile' %}">View Profile</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <form method="POST" action="{% url 'users:logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="dropdown-item">Logout</button>
+            </form>
+          </li>
+        </ul>
       </div>
+      {% endif %}
+
     </div>
   </nav>
 
