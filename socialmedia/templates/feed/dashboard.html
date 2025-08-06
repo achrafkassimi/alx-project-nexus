@@ -3,33 +3,46 @@
 {% block content %}
 <div class="container mt-4">
 
-  <!-- Navbar with Search, Chat Icon, Profile Dropdown -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light rounded mb-4">
-    <div class="container-fluid">
-      <!-- Search Bar -->
-      <form class="d-flex" method="GET" action="{% url 'feed:dashboard' %}">
-        <input class="form-control me-2" type="search" name="q" placeholder="Search posts or users" aria-label="Search" value="{{ request.GET.q }}">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+<!-- Navbar with Search, Chat Icon, Profile Dropdown -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light rounded mb-4">
+  <div class="container-fluid">
+
+    <!-- Search Bar -->
+    <form class="d-flex" method="GET" action="{% url 'feed:dashboard' %}">
+      <input class="form-control me-2" type="search" name="q" placeholder="Search posts or users"
+        aria-label="Search" value="{{ request.GET.q }}">
+      <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+
+    <!-- Right Side Buttons -->
+    <div class="d-flex align-items-center">
 
       <!-- Chat Icon -->
       <a href="#" class="btn btn-outline-primary ms-3" title="Chat">
-          <i class="bi bi-chat-dots"></i> <!-- Bootstrap Icons -->
+        <i class="bi bi-chat-dots"></i>
       </a>
 
       <!-- Profile Dropdown -->
       <div class="dropdown ms-3">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="bi bi-person-circle"></i> {{ user.username }}
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="profileDropdown"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-circle"></i> {{ user.username }} <!-- Bootstrap Icons -->
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
           <li><a class="dropdown-item" href="{% url 'users:profile' %}">View Profile</a></li>
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="{% url 'users:logout' %}">Logout</a></li>
+          <li>
+            <form method="POST" action="{% url 'users:logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="dropdown-item">Logout</button>
+            </form>
+          </li>
         </ul>
       </div>
     </div>
-  </nav>
+  </div>
+</nav>
+
 
   <!-- Posts List -->
   <h3>All Posts</h3>
