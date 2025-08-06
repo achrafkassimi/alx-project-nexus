@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Post{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2>Edit Post</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="content" class="form-label">Content</label>
+      <textarea name="content" class="form-control" rows="4" required>{{ post.content }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a href="{% url 'feed:dashboard' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}
