@@ -3,42 +3,66 @@
 {% block content %}
 <div class="container mt-4">
 
-<!-- Navbar with Search, Chat Icon, Profile Dropdown -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light rounded mb-4">
-  <div class="container-fluid">
+  <!-- Navbar with Search, Chat Icon, Profile Dropdown -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light rounded mb-4">
+    <div class="container-fluid">
 
-    <!-- Search Bar -->
-    <form class="d-flex" method="GET" action="{% url 'feed:dashboard' %}">
-      <input class="form-control me-2" type="search" name="q" placeholder="Search posts or users"
-        aria-label="Search" value="{{ request.GET.q }}">
-      <button class="btn btn-outline-success" type="submit">Search</button>
-    </form>
+      <!-- Search Bar -->
+      <form class="d-flex" method="GET" action="{% url 'feed:dashboard' %}">
+        <input class="form-control me-2" type="search" name="q" placeholder="Search posts or users"
+          aria-label="Search" value="{{ request.GET.q }}">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
 
-    <!-- Right Side Buttons -->
-    <div class="d-flex align-items-center">
+      <!-- Right Side Buttons -->
+      <div class="d-flex align-items-center">
 
-      <!-- Chat Icon -->
-      <a href="#" class="btn btn-outline-primary ms-3" title="Chat">
-        <i class="bi bi-chat-dots"></i>
-      </a>
+        <!-- Chat Icon -->
+        <a href="#" class="btn btn-outline-primary ms-3" title="Chat">
+          <i class="bi bi-chat-dots"></i>
+        </a>
 
-
-
-
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
 
   <!-- Posts List -->
-  <h3>All Posts</h3>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>All Posts</h2>
+    <a href="{% url 'feed:create_post' %}" class="btn btn-success">
+      <i class="bi bi-plus-circle"></i> Add Post
+    </a>
+  </div>
+
 
   {% if posts %}
     {% for post in posts %}
     <div class="card mb-3">
-      <div class="card-header">
-        <strong>{{ post.author.username }}</strong> • {{ post.created_at|date:"Y-m-d H:i" }}
+
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+          <strong>{{ post.author.username }}</strong> ·
+          <small class="text-muted">{{ post.created_at|date:"d M Y H:i" }}</small>
+        </div>
+        <!-- Edit/Delete icons for post owner -->
+        {% if post.author == user %}
+          <div class="d-flex gap-2">
+            <!-- Edit -->
+            <a href="{% url 'feed:edit_post' post.id %}" class="text-warning" title="Edit Post">
+              <i class="bi bi-pencil-square"></i>
+            </a>
+    
+            <!-- Delete -->
+            <a href="{% url 'feed:delete_post' post.id %}" class="text-danger" title="Delete Post">
+              <i class="bi bi-trash"></i>
+            </a>
+          </div>
+        {% endif %}
+  
       </div>
+
       <div class="card-body">
         <p>{{ post.content }}</p>
 
@@ -50,11 +74,11 @@
           </button>
         </form>
 
-        <!-- Edit/Delete if owner -->
+        <!-- Edit/Delete if owner
         {% if user == post.author %}
           <a href="{% url 'feed:edit_post' post.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
           <a href="{% url 'feed:delete_post' post.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
-        {% endif %}
+        {% endif %} -->
 
         <!-- Comments -->
         <div class="mt-3">
