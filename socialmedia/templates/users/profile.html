@@ -4,6 +4,9 @@
 <div class="container mt-4">
   <h2>Profile name: {{ profile_user.username }}</h2>
   <p>Email: {{ profile_user.email }}</p>
+  {% if profile_user.bio %}
+    <p class="text-muted">{{ profile_user.bio }}</p>
+  {% endif %}
 
   <hr>
   <h3>Your Posts</h3>
