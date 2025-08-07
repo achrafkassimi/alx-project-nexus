@@ -46,9 +46,14 @@ def toggle_like(request, post_id):
             post.liked_by.add(user)
             liked_by = True
 
+        # ✅ هنا نحصلو على لائحة usernames لي دارو Like
+        usernames = list(post.liked_by.values_list('username', flat=True))
+
         return JsonResponse({
             'liked_by': liked_by,
-            'total_likes': post.liked_by.count()
+            'total_likes': post.liked_by.count(),
+            'usernames': usernames,
+
         })
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
