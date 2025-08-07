@@ -1,3 +1,4 @@
+{% csrf_token %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,6 +65,8 @@
         button.addEventListener("click", function () {
           const likeSection = this.closest(".like-section");
           const postId = likeSection.getAttribute("data-post-id");
+          const likeIcon = this.querySelector(".like-icon");
+          const likeCount = likeSection.querySelector(".like-count");
   
           fetch(`/feed/like/${postId}/`, {
             method: "POST",
@@ -74,11 +77,12 @@
           })
           .then(response => response.json())
           .then(data => {
-            // Update icon
-            this.textContent = data.liked ? "❤️" : "🤍";
-            // Update count
-            likeSection.querySelector(".like-count").textContent = data.total_likes;
-          });
+            // ✅ Update icon and count directly
+            likeIcon.innerHTML = data.liked_by ? "❤️" : "🤍";
+            likeCount.textContent = data.liked_by;
+          })
+          .catch(error => console.error("AJAX Error:", error));
+
         });
       });
   

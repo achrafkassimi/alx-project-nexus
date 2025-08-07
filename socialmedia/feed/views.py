@@ -35,19 +35,23 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login')
 def toggle_like(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
-    liked = False
+    if request.method == "POST":
+        post = Post.objects.get(pk=post_id)
+        user = request.user
 
-    if request.user in post.likes.all():
-        post.likes.remove(request.user)
+        if user in post.liked_by.all():
+            post.liked_by.remove(user)
+            liked_by = False
+        else:
+            post.liked_by.add(user)
+            liked_by = True
+
+        return JsonResponse({
+            'liked_by': liked_by,
+            'total_likes': post.liked_by.count()
+        })
     else:
-        post.likes.add(request.user)
-        liked = True
-
-    return JsonResponse({
-        'liked': liked,
-        'total_likes': post.total_likes()
-    })
+        return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 @login_required(login_url='login')

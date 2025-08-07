@@ -65,20 +65,20 @@
 
       <div class="card-body">
         <p>{{ post.content }}</p>
+        <hr>
 
-        <!-- داخل loop ديال البوستات -->
         <div class="like-section" data-post-id="{{ post.id }}">
           <button class="like-button">
-            {% if user in post.likes.all %}
-              ❤️
-            {% else %}
-              🤍
-            {% endif %}
+            <span class="like-icon">
+              {% if user in post.liked_by.all %}❤️{% else %}🤍{% endif %}
+            </span>
           </button>
-          <span class="like-count">{{ post.total_likes }}</span>
+          <!-- <span id="like-count-{{ post.id }}">{{ post.liked_by.count }} Likes</span> -->
+          <span class="like-count">{{ post.liked_by.count }}</span> Likes
+
         </div>
 
-
+        <hr>
         <!-- Comments -->
         <div class="mt-3">
           <h6>Comments:</h6>
