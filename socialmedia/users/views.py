@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
+
+from .models import CustomUser
 from .forms import RegisterForm, LoginForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from feed.models import Post
+from .forms import EditProfileForm
 
 
 def register_view(request):
@@ -58,13 +61,14 @@ def logout_view(request):
 
 
 @login_required(login_url='login')
-def profile_view(request):
-    user = request.user
+def profile_view(request, username):
+    user = get_object_or_404(CustomUser, username=username)
     posts = Post.objects.filter(author=user).order_by('-created_at')
 
     context = {
         'profile_user': user,
         'posts': posts,
+        'user': user,
     }
     return render(request, 'users/profile.html', context)
 
@@ -76,3 +80,17 @@ def delete_post_view(request, post_id):
         messages.success(request, "Post deleted successfully.")
         return redirect('users:profile')
     return render(request, 'users/confirm_delete.html', {'post': post})
+
+
+@login_required(login_url='login')
+def edit_profile(request):
+
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST, request.FILES, instance=request.user)  # 👈 request.FILES
+        if form.is_valid():
+            form.save()
+            return redirect('users:profile', username=request.user.username)
+    else:
+        form = EditProfileForm(instance=request.user)
+
+    return render(request, 'users/edit_profile.html', {'form': form})

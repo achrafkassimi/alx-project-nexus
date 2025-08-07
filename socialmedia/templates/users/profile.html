@@ -3,11 +3,23 @@
 {% block content %}
 <div class="container mt-4">
   <!-- profile.html --> 
-  <img src="{{ profile_user.avatar.url }}" class="rounded-circle" width="100" height="100" alt="avatar">
+  {% if user.avatar %}
+    <img src="{{ user.avatar.url }}" alt="Avatar" class="rounded-circle mb-3" width="280  " height="200">
+  {% endif %}
+  
   <h2>Profile name: {{ profile_user.username }}</h2>
   <p>Email: {{ profile_user.email }}</p>
+  
   {% if profile_user.bio %}
     <p class="text-muted">{{ profile_user.bio }}</p>
+  {% endif %}
+
+  <!-- Show Edit Profile button only if it's the current user's own profile -->
+  {% if request.user == profile_user %}
+  <a href="{% url 'users:edit_profile' %}" class="btn btn-outline-primary btn-sm mb-3">
+    <i class="bi bi-pencil-square"></i> Edit Profile
+  </a>
+  <a href="{% url 'users:change_password' %}" class="btn btn-outline-warning btn-sm">Change Password</a>
   {% endif %}
 
   <hr>

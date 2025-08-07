@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Post, Comment
 from django.db.models import Q
 
+
 @login_required(login_url='login')
 def dashboard_view(request):
     query = request.GET.get('q')
@@ -142,3 +143,4 @@ def delete_post(request, post_id):
         post.delete()
 
     return redirect('feed:dashboard')
+

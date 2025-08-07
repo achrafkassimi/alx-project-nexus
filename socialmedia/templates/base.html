@@ -30,7 +30,7 @@
           <i class="bi bi-person-circle"></i> {{ user.username }} <!-- Bootstrap Icons -->
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-          <li><a class="dropdown-item" href="{% url 'users:profile' %}">View Profile</a></li>
+          <li><a class="dropdown-item" href="{% url 'users:profile' username=request.user.username %}">View Profile</a></li>
           <li><hr class="dropdown-divider"></li>
           <li>
             <form method="POST" action="{% url 'users:logout' %}">
