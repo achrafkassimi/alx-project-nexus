@@ -159,3 +159,6 @@ LOGOUT_REDIRECT_URL = '/user/login/'
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'feed:dashboard'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

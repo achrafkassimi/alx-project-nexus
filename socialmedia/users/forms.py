@@ -14,13 +14,13 @@ class LoginForm(AuthenticationForm):
     password = forms.CharField(widget=forms.PasswordInput)
 
 # users/forms.py
-
 class EditProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'email', 'bio']
+        fields = ['username', 'email', 'bio', 'avatar']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
+
