@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Post, Comment
 from django.db.models import Q
-
+from django.http import JsonResponse
 
 @login_required(login_url='login')
 def dashboard_view(request):
@@ -21,17 +21,33 @@ def dashboard_view(request):
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
+# @login_required(login_url='login')
+# def like_post(request, post_id):
+#     post = get_object_or_404(Post, id=post_id)
+#     user = request.user
+
+#     if user in post.liked_by.all():
+#         post.liked_by.remove(user)
+#     else:
+#         post.liked_by.add(user)
+
+#     return redirect('feed:dashboard')
+
 @login_required(login_url='login')
-def like_post(request, post_id):
+def toggle_like(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    user = request.user
+    liked = False
 
-    if user in post.liked_by.all():
-        post.liked_by.remove(user)
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)
     else:
-        post.liked_by.add(user)
+        post.likes.add(request.user)
+        liked = True
 
-    return redirect('feed:dashboard')
+    return JsonResponse({
+        'liked': liked,
+        'total_likes': post.total_likes()
+    })
 
 
 @login_required(login_url='login')

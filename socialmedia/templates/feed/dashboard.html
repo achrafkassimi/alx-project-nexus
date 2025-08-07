@@ -66,13 +66,18 @@
       <div class="card-body">
         <p>{{ post.content }}</p>
 
-        <!-- Like Button -->
-        <form method="POST" action="{% url 'feed:like_post' post.id %}">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-sm btn-outline-danger">
-            ❤️ {{ post.total_likes }}
+        <!-- داخل loop ديال البوستات -->
+        <div class="like-section" data-post-id="{{ post.id }}">
+          <button class="like-button">
+            {% if user in post.likes.all %}
+              ❤️
+            {% else %}
+              🤍
+            {% endif %}
           </button>
-        </form>
+          <span class="like-count">{{ post.total_likes }}</span>
+        </div>
+
 
         <!-- Comments -->
         <div class="mt-3">

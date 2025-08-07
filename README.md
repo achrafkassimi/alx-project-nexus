@@ -412,3 +412,33 @@ user2 = CustomUser.objects.create_user(username="fatima", email="fatima@example.
 Post.objects.create(author=user1, content="Salam 3likom! Hadhi awel post dyali 😊")
 Post.objects.create(author=user2, content="J'aime ce projet Django ❤️")
 Post.objects.create(author=user1, content="Kanbni la recherche tatmchi mzyan! 👀")
+----------------------------------------
+
+❌ شنو مازال خاصنا:
+🔄 Like System (بشكل فعّال):
+⏳ Backend implementation (toggle like/unlike)
+
+⏳ Show total likes per post
+
+⏳ Ajax (optional) for real-time like without reload
+
+📡 Real-time Chat (WebSocket or Basic):
+❌ Chat app (views, urls, templates)
+
+❌ List of users to chat with
+
+❌ Message sending interface (form)
+
+❌ Save & render chat messages
+
+✨ Extra Features (اختياري):
+⏳ Pagination for posts
+
+⏳ Profile image (avatar)
+
+⏳ User bio/edit profile
+
+⏳ Notification for likes/comments
+
+⏳ Responsive/mobile-friendly polish
+
