@@ -79,7 +79,9 @@
           .then(data => {
             // ✅ Update icon and count directly
             likeIcon.innerHTML = data.liked_by ? "❤️" : "🤍";
-            likeCount.textContent = data.liked_by;
+            // likeCount.textContent = data.liked_by;
+            likeCount.textContent = data.total_likes;
+
           })
           .catch(error => console.error("AJAX Error:", error));
 
