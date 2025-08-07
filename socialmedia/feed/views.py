@@ -44,24 +44,24 @@ def add_comment(request, post_id):
     return redirect('feed:dashboard')
 
 
-@login_required(login_url='login')
-def edit_post(request, post_id):
-    post = get_object_or_404(Post, id=post_id, author=request.user)
+# @login_required(login_url='login')
+# def edit_post(request, post_id):
+#     post = get_object_or_404(Post, id=post_id, author=request.user)
 
-    if request.method == 'POST':
-        content = request.POST.get('content')
-        post.content = content
-        post.save()
-        return redirect('feed:dashboard')
+#     if request.method == 'POST':
+#         content = request.POST.get('content')
+#         post.content = content
+#         post.save()
+#         return redirect('feed:dashboard')
 
-    return render(request, 'feed/edit_post.html', {'post': post})
+#     return render(request, 'feed/edit_post.html', {'post': post})
 
 
-@login_required(login_url='login')
-def delete_post(request, post_id):
-    post = get_object_or_404(Post, id=post_id, author=request.user)
-    post.delete()
-    return redirect('feed:dashboard')
+# @login_required(login_url='login')
+# def delete_post(request, post_id):
+#     post = get_object_or_404(Post, id=post_id, author=request.user)
+#     post.delete()
+#     return redirect('feed:dashboard')
 
 
 @login_required(login_url='login')
@@ -91,3 +91,54 @@ def edit_comment(request, comment_id):
             return redirect('feed:dashboard')
 
     return render(request, 'feed/edit_comment.html', {'comment': comment})
+
+
+# feed/views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Post
+from .forms import PostForm
+
+@login_required(login_url='login')
+def create_post(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect('feed:dashboard')
+    else:
+        form = PostForm()
+    
+    return render(request, 'feed/create_post.html', {'form': form})
+
+
+from django.shortcuts import get_object_or_404
+
+@login_required(login_url='login')
+def edit_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if post.author != request.user:
+        return redirect('feed:dashboard')
+
+    if request.method == 'POST':
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('feed:dashboard')
+    else:
+        form = PostForm(instance=post)
+
+    return render(request, 'feed/edit_post.html', {'form': form, 'post': post})
+
+
+@login_required(login_url='login')
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if post.author == request.user:
+        post.delete()
+
+    return redirect('feed:dashboard')
