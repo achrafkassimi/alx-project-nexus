@@ -39,10 +39,24 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'feed',  # Custom app for handling feeds and posts
     'users',  # Custom app for user management
+    'channels',
+    'chat',  # تأكد أن app chat مضافة
     # 'graphene_django',  # GraphQL support
     # 'graphql_jwt.refresh_token.apps.RefreshTokenConfig',  # JWT refresh token support
     # 'graphql_jwt',  # JWT authentication support
 ]
+
+ASGI_APPLICATION = "socialmedia.asgi.application"
+
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -8,21 +8,37 @@
     <div class="container-fluid">
 
       <!-- Search Bar -->
-      <form class="d-flex" method="GET" action="{% url 'feed:dashboard' %}">
+      <form class="form-inline my-2 my-lg-0 " method="GET" action="{% url 'feed:dashboard' %}">
         <input class="form-control me-2" type="search" name="q" placeholder="Search posts or users"
           aria-label="Search" value="{{ request.GET.q }}">
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
 
       <!-- Right Side Buttons -->
-      <div class="d-flex align-items-center">
+      <!-- <div class="d-flex align-items-center"> -->
 
         <!-- Chat Icon -->
-        <a href="#" class="btn btn-outline-primary ms-3" title="Chat">
+        <!-- <a href="#" class="btn btn-outline-primary ms-3" title="Chat">
           <i class="bi bi-chat-dots"></i>
         </a>
 
-      </div>
+      </div> -->
+
+    </div>
+  </nav>
+
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
     </div>
   </nav>
 
