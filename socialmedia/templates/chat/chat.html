@@ -1,23 +1,46 @@
-<!-- chat.html -->
+{% extends 'base.html' %}
+{% load static %}
 
-<input type="text" id="messageInput">
-<button onclick="sendMessage()">Send</button>
+{% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <!-- Sidebar: Users List -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5>📜 Users</h5>
+        </div>
+        <ul class="list-group list-group-flush">
+          {% for user in users %}
+          <a href="{% url 'chat_with_user' user.id %}"
+             class="list-group-item list-group-item-action {% if user.id == other_user.id %}active{% endif %}">
+            {{ user.username }}
+          </a>
+        {% endfor %}
+        
+        </ul>
+      </div>
+    </div>
 
-<ul id="messagesList"></ul>
-
-<script>
-  const roomName = "testroom";
-  const chatSocket = new WebSocket(
-    `ws://${window.location.host}/ws/chat/${roomName}/`
-  );
-
-  chatSocket.onmessage = function(e) {
-    const data = JSON.parse(e.data);
-    document.querySelector('#messagesList').innerHTML += `<li>${data.message}</li>`;
-  };
-
-  function sendMessage() {
-    const message = document.querySelector('#messageInput').value;
-    chatSocket.send(JSON.stringify({ 'message': message }));
-  }
-</script>
+    <!-- Chat Interface -->
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h4>💬 Chat with {{ other_user.username }}</h4>
+        </div>
+        <div class="card-body" id="chat-box" style="height: 300px; overflow-y: scroll;">
+          <!-- الرسائل غادي تطلع هنا -->
+        </div>
+        <div class="card-footer">
+          <form id="chat-form">
+            <div class="input-group">
+              <input type="text" id="chat-message-input" class="form-control" placeholder="Type your message...">
+              <button class="btn btn-primary" type="submit">Send</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
