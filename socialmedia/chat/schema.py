@@ -2,6 +2,7 @@ import graphene
 from graphene_django.types import DjangoObjectType
 from chat.models import Message
 from django.contrib.auth import get_user_model
+from django.db import models
 
 User = get_user_model()
 
@@ -16,12 +17,16 @@ class MessageType(DjangoObjectType):
         fields = ("id", "sender", "receiver", "content", "timestamp")
 
 class Query(graphene.ObjectType):
-    messages = graphene.List(MessageType, user1_id=graphene.Int(required=True), user2_id=graphene.Int(required=True))
+    messages = graphene.List(MessageType, other_user_id=graphene.Int(required=True))
 
-    def resolve_messages(self, info, user1_id, user2_id):
+    def resolve_messages(self, info, other_user_id):
+        user = info.context.user
+        if not user.is_authenticated:
+            raise Exception("Authentication required")
+
         return Message.objects.filter(
-            (Q(sender_id=user1_id) & Q(receiver_id=user2_id)) |
-            (Q(sender_id=user2_id) & Q(receiver_id=user1_id))
+            models.Q(sender=user, receiver_id=other_user_id) |
+            models.Q(sender_id=other_user_id, receiver=user)
         ).order_by("timestamp")
 
 class SendMessage(graphene.Mutation):
@@ -32,12 +37,11 @@ class SendMessage(graphene.Mutation):
         content = graphene.String(required=True)
 
     def mutate(self, info, receiver_id, content):
-        sender = info.context.user
-        if sender.is_anonymous:
+        user = info.context.user
+        if not user.is_authenticated:
             raise Exception("Authentication required")
-
-        message = Message.objects.create(sender=sender, receiver_id=receiver_id, content=content)
-        return SendMessage(message=message)
+        msg = Message.objects.create(sender=user, receiver_id=receiver_id, content=content)
+        return SendMessage(message=msg)
 
 class Mutation(graphene.ObjectType):
     send_message = SendMessage.Field()

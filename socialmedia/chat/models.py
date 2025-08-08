@@ -1,11 +1,12 @@
 from django.db import models
+from users.models import CustomUser
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
 class Message(models.Model):
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
+    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='chat_sent_messages')
+    receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='chat_received_messages')
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
