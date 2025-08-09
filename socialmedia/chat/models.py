@@ -9,6 +9,7 @@ class Message(models.Model):
     receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='chat_received_messages')
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)  # New field to track read status
 
     class Meta:
         ordering = ['timestamp']
