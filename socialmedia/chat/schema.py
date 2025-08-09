@@ -45,3 +45,5 @@ class SendMessage(graphene.Mutation):
 
 class Mutation(graphene.ObjectType):
     send_message = SendMessage.Field()
+
+

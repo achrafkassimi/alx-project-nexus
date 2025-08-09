@@ -3,7 +3,6 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from chat.models import Message
 
-# chat/consumers.py
 class ChatConsumer(AsyncWebsocketConsumer):
     
     async def connect(self):
@@ -28,56 +27,33 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     # Receive message from WebSocket
     async def receive(self, text_data):
-        # print("Received data on websocket:", text_data)  # تأكد أنه استقبل الرسالة
-
         data = json.loads(text_data)
         message = data['message']
         sender = self.scope['user']
-        receiver_id = self.user_id  # خاص تحددها حسب room أو parameter
+        receiver_id = self.user_id
 
-
-        # حفظ الرسالة فـ DB
+        # Save message to database
         msg = await self.save_message(sender, receiver_id, message)
 
-        # إرسال الرسالة للمجموعة
+        # Send message to room group
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'chat_message',
                 'message': msg.content,
-                'sender': sender.username,
+                'sender': sender.username,  # This should match frontend expectation
                 'timestamp': msg.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
             }
         )
 
     async def chat_message(self, event):
-        # print("Sending message to websocket:", event)
+        # Send message to WebSocket
         await self.send(text_data=json.dumps({
             'message': event['message'],
-            'sender': event['sender'],
+            'sender': event['sender'],  # Make sure this matches frontend
             'timestamp': event['timestamp'],
         }))
 
     @database_sync_to_async
     def save_message(self, sender, receiver_id, content):
         return Message.objects.create(sender=sender, receiver_id=receiver_id, content=content)
-    
-
-import json
-from channels.generic.websocket import AsyncWebsocketConsumer
-
-class TestConsumer(AsyncWebsocketConsumer):
-    async def connect(self):
-        await self.accept()
-        await self.send(text_data=json.dumps({
-            "message": "✅ Connection established!"
-        }))
-
-    async def disconnect(self, close_code):
-        pass
-
-    async def receive(self, text_data):
-        data = json.loads(text_data)
-        await self.send(text_data=json.dumps({
-            "message": f"Echo: {data.get('message')}"
-        }))

@@ -17,7 +17,6 @@
             {{ user.username }}
           </a>
         {% endfor %}
-        
         </ul>
       </div>
     </div>
@@ -29,7 +28,7 @@
           <h4>💬 Chat with {{ other_user.username }}</h4>
         </div>
         <div class="card-body" id="chat-box" style="height: 300px; overflow-y: scroll;">
-          <!-- الرسائل غادي تطلع هنا -->
+          <!-- Messages will appear here -->
         </div>
         <div class="card-footer">
           <form id="chat-form">
@@ -49,23 +48,31 @@
   const username = "{{ request.user.username }}";
   const chatBox = document.getElementById("chat-box");
   
-  // إنشاء WebSocket للغرفة
+  // Create single WebSocket connection
   const chatSocket = new WebSocket(
     'ws://' + window.location.host + '/ws/chat/' + otherUserId + '/'
   );
   
-  // استقبال الرسائل عبر WebSocket وعرضها
+  // Handle incoming WebSocket messages
   chatSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
-    chatBox.innerHTML += `<div><strong>${data.username}:</strong> ${data.message}</div>`;
+    chatBox.innerHTML += `<div><strong>${data.sender}:</strong> ${data.message}</div>`;
     chatBox.scrollTop = chatBox.scrollHeight;
+  };
+  
+  chatSocket.onopen = function(e) {
+    console.log("WebSocket connection opened");
   };
   
   chatSocket.onclose = function(e) {
     console.error('Chat socket closed unexpectedly');
   };
 
-  // جلب الرسائل من GraphQL عند تحميل الصفحة
+  chatSocket.onerror = function(e) {
+    console.error("WebSocket error:", e);
+  };
+
+  // Fetch existing messages from GraphQL when page loads
   function fetchMessages() {
     fetch('/graphql/', {
       method: 'POST',
@@ -95,22 +102,21 @@
         chatBox.innerHTML += `<div><strong>${msg.sender.username}:</strong> ${msg.content}</div>`;
       });
       chatBox.scrollTop = chatBox.scrollHeight;
-    });
+    })
+    .catch(err => console.error('Error fetching messages:', err));
   }
   
+  // Load messages on page load
   fetchMessages();
   
-  // إرسال رسالة عبر GraphQL mutation ثم عرضها فوراً + إرسالها عبر WebSocket
+  // Handle form submission - send message via GraphQL then broadcast via WebSocket
   document.getElementById("chat-form").onsubmit = function(e) {
     e.preventDefault();
     const messageInput = document.getElementById("chat-message-input");
     const message = messageInput.value.trim();
     if (!message) return;
   
-    // عرض الرسالة فوراً في DOM قبل الرد
-    // chatBox.innerHTML += `<div><strong>${data.username}:</strong> ${message}</div>`;
-    // chatBox.scrollTop = chatBox.scrollHeight;
-  
+    // Send message via GraphQL mutation first
     fetch('/graphql/', {
       method: 'POST',
       headers: {
@@ -135,11 +141,15 @@
     })
     .then(res => res.json())
     .then(() => {
-      chatSocket.send(JSON.stringify({
-        message: message,
-        username: username
-      }));
-      messageInput.value = "";
+      // After successful GraphQL save, broadcast via WebSocket
+      if (chatSocket.readyState === WebSocket.OPEN) {
+        chatSocket.send(JSON.stringify({
+          message: message,
+        }));
+        messageInput.value = "";
+      } else {
+        console.warn("WebSocket not ready");
+      }
     })
     .catch(err => console.error('Error sending message:', err));
   };
@@ -150,43 +160,6 @@
       .find(row => row.startsWith("csrftoken="))
       .split("=")[1];
   }
-  </script>
-  
-
-  <script>
-    const otherUserIdd = "{{ other_user.id }}";  // أو قيمة تجريبية ثابتة للتجربة
-    const wsUrl = 'ws://' + window.location.host + '/ws/chat/' + otherUserIdd + '/';
-  
-    console.log("Trying to connect to WebSocket at: ", wsUrl);
-  
-    const chatSocket = new WebSocket(wsUrl);
-  
-    chatSocket.onopen = function(e) {
-      console.log("WebSocket connection opened");
-    };
-  
-    chatSocket.onmessage = function(e) {
-      console.log("Received message:", e.data);
-    };
-  
-    chatSocket.onerror = function(e) {
-      console.error("WebSocket error:", e);
-    };
-  
-    chatSocket.onclose = function(e) {
-      console.warn("WebSocket connection closed:", e);
-    };
-  
-    // اختياري: إرسال رسالة اختبارية بعد 2 ثانية
-    setTimeout(() => {
-      if (chatSocket.readyState === WebSocket.OPEN) {
-        chatSocket.send(JSON.stringify({message: "Hello from client!", username: "TestUser"}));
-        console.log("Sent test message");
-      } else {
-        console.warn("WebSocket not open, can't send test message");
-      }
-    }, 2000);
-  </script>
-  
+</script>
 
 {% endblock %}
