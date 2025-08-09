@@ -25,11 +25,21 @@
     <div class="col-md-8">
       <div class="card">
         <div class="card-header">
-          <h4>💬 Chat with {{ other_user.username }}</h4>
+          <h4>💬 Chat with 
+            {% if other_user %}
+              {{ other_user.username }}
+            {% else %}
+              (Select a user)
+            {% endif %}
+          </h4>
         </div>
-        <div class="card-body" id="chat-box" style="height: 300px; overflow-y: scroll;">
+        <div class="card-body" id="chat-box" style="height: 300px; overflow-y: scroll; background-color: #f8f9fa;">
           <!-- Messages will appear here -->
+          {% if not other_user %}
+            <p class="text-center text-muted mt-5">Select a user from the sidebar to start chatting</p>
+          {% endif %}
         </div>
+        {% if other_user %}
         <div class="card-footer">
           <form id="chat-form">
             <div class="input-group">
@@ -38,34 +48,54 @@
             </div>
           </form>
         </div>
+        {% endif %}
       </div>
     </div>
   </div>
 </div>
 
+{% if other_user %}
 <script>
   const otherUserId = "{{ other_user.id }}";
-  const username = "{{ request.user.username }}";
+  const currentUsername = "{{ request.user.username }}";
   const chatBox = document.getElementById("chat-box");
   
-  // Create single WebSocket connection
+  // Create WebSocket connection
   const chatSocket = new WebSocket(
     'ws://' + window.location.host + '/ws/chat/' + otherUserId + '/'
   );
   
   // Handle incoming WebSocket messages
   chatSocket.onmessage = function(e) {
+    console.log("Received WebSocket message:", e.data);
     const data = JSON.parse(e.data);
-    chatBox.innerHTML += `<div><strong>${data.sender}:</strong> ${data.message}</div>`;
+    
+    // Add message to chat
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'mb-2 p-2 rounded';
+    
+    // Style differently for current user vs other user
+    if (data.sender === currentUsername) {
+      messageDiv.className += ' bg-primary text-white ml-auto';
+      messageDiv.style.maxWidth = '70%';
+      messageDiv.style.marginLeft = 'auto';
+      messageDiv.innerHTML = `<div><strong>You:</strong> ${data.message}</div><small>${data.timestamp || 'now'}</small>`;
+    } else {
+      messageDiv.className += ' bg-light';
+      messageDiv.style.maxWidth = '70%';
+      messageDiv.innerHTML = `<div><strong>${data.sender}:</strong> ${data.message}</div><small>${data.timestamp || 'now'}</small>`;
+    }
+    
+    chatBox.appendChild(messageDiv);
     chatBox.scrollTop = chatBox.scrollHeight;
   };
   
   chatSocket.onopen = function(e) {
-    console.log("WebSocket connection opened");
+    console.log("WebSocket connection opened successfully");
   };
   
   chatSocket.onclose = function(e) {
-    console.error('Chat socket closed unexpectedly');
+    console.error('WebSocket connection closed:', e);
   };
 
   chatSocket.onerror = function(e) {
@@ -97,69 +127,68 @@
     })
     .then(res => res.json())
     .then(res => {
+      console.log("Fetched messages:", res.data);
       chatBox.innerHTML = '';
-      res.data.messages.forEach(msg => {
-        chatBox.innerHTML += `<div><strong>${msg.sender.username}:</strong> ${msg.content}</div>`;
-      });
+      
+      if (res.data && res.data.messages) {
+        res.data.messages.forEach(msg => {
+          const messageDiv = document.createElement('div');
+          messageDiv.className = 'mb-2 p-2 rounded';
+          
+          if (msg.sender.username === currentUsername) {
+            messageDiv.className += ' bg-primary text-white ml-auto';
+            messageDiv.style.maxWidth = '70%';
+            messageDiv.style.marginLeft = 'auto';
+            messageDiv.innerHTML = `<div><strong>You:</strong> ${msg.content}</div><small>${new Date(msg.timestamp).toLocaleTimeString()}</small>`;
+          } else {
+            messageDiv.className += ' bg-light';
+            messageDiv.style.maxWidth = '70%';
+            messageDiv.innerHTML = `<div><strong>${msg.sender.username}:</strong> ${msg.content}</div><small>${new Date(msg.timestamp).toLocaleTimeString()}</small>`;
+          }
+          
+          chatBox.appendChild(messageDiv);
+        });
+      }
+      
       chatBox.scrollTop = chatBox.scrollHeight;
     })
-    .catch(err => console.error('Error fetching messages:', err));
+    .catch(err => {
+      console.error('Error fetching messages:', err);
+      chatBox.innerHTML = '<p class="text-danger">Error loading messages</p>';
+    });
   }
   
   // Load messages on page load
   fetchMessages();
   
-  // Handle form submission - send message via GraphQL then broadcast via WebSocket
+  // Handle form submission - send via WebSocket only
   document.getElementById("chat-form").onsubmit = function(e) {
     e.preventDefault();
     const messageInput = document.getElementById("chat-message-input");
     const message = messageInput.value.trim();
     if (!message) return;
-  
-    // Send message via GraphQL mutation first
-    fetch('/graphql/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': getCSRFToken(),
-      },
-      body: JSON.stringify({
-        query: `
-          mutation {
-            sendMessage(receiverId: ${otherUserId}, content: "${message.replace(/"/g, '\\"')}") {
-              message {
-                id
-                content
-                sender {
-                  username
-                }
-              }
-            }
-          }
-        `
-      }),
-    })
-    .then(res => res.json())
-    .then(() => {
-      // After successful GraphQL save, broadcast via WebSocket
-      if (chatSocket.readyState === WebSocket.OPEN) {
-        chatSocket.send(JSON.stringify({
-          message: message,
-        }));
-        messageInput.value = "";
-      } else {
-        console.warn("WebSocket not ready");
-      }
-    })
-    .catch(err => console.error('Error sending message:', err));
+
+    console.log("Sending message via WebSocket:", message);
+
+    // Send directly via WebSocket
+    if (chatSocket.readyState === WebSocket.OPEN) {
+      chatSocket.send(JSON.stringify({
+        message: message,
+      }));
+      messageInput.value = "";
+    } else {
+      console.warn("WebSocket not ready, state:", chatSocket.readyState);
+      alert("Connection not ready. Please try again.");
+    }
   };
   
   function getCSRFToken() {
-    return document.cookie
-      .split("; ")
-      .find(row => row.startsWith("csrftoken="))
-      .split("=")[1];
+    const cookieValue = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('csrftoken='));
+    return cookieValue ? cookieValue.split('=')[1] : null;
   }
 </script>
+{% endif %}
 
 {% endblock %}
