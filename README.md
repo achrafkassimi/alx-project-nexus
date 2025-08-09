@@ -714,6 +714,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Ready to explore the platform? Follow the installation guide above and start building your social network!
 
-For questions or support, please open an issue or reach out via [your contact method].
+For questions or support, please open an issue or reach out via [achraf.kassimi.1995@gmail.com].
 
 **Happy coding! 🎉**
