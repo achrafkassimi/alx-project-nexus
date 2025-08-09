@@ -11,15 +11,20 @@ import os
 import django
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
-from django.core.asgi import get_asgi_application
-from chat.routing import websocket_urlpatterns
+from django.core.asgi import get_asgi_application  # هادي مهمة!
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "socialmedia.settings")
-django.setup()
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'socialmedia.settings')
+django.setup()  # Ensure apps are loaded
+
+import chat.routing  # Import AFTER setup
 
 application = ProtocolTypeRouter({
-    "http": get_asgi_application(),
+    "http": get_asgi_application(),  # <== هنا عرفنا HTTP application
     "websocket": AuthMiddlewareStack(
-        URLRouter(websocket_urlpatterns)
+        URLRouter(
+            chat.routing.websocket_urlpatterns
+        )
     ),
 })
+

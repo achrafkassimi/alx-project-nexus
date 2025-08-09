@@ -64,7 +64,7 @@
   chatSocket.onclose = function(e) {
     console.error('Chat socket closed unexpectedly');
   };
-  
+
   // جلب الرسائل من GraphQL عند تحميل الصفحة
   function fetchMessages() {
     fetch('/graphql/', {
@@ -108,7 +108,7 @@
     if (!message) return;
   
     // عرض الرسالة فوراً في DOM قبل الرد
-    // chatBox.innerHTML += `<div><strong>${username}:</strong> ${message}</div>`;
+    // chatBox.innerHTML += `<div><strong>${data.username}:</strong> ${message}</div>`;
     // chatBox.scrollTop = chatBox.scrollHeight;
   
     fetch('/graphql/', {
@@ -152,4 +152,41 @@
   }
   </script>
   
+
+  <script>
+    const otherUserIdd = "{{ other_user.id }}";  // أو قيمة تجريبية ثابتة للتجربة
+    const wsUrl = 'ws://' + window.location.host + '/ws/chat/' + otherUserIdd + '/';
+  
+    console.log("Trying to connect to WebSocket at: ", wsUrl);
+  
+    const chatSocket = new WebSocket(wsUrl);
+  
+    chatSocket.onopen = function(e) {
+      console.log("WebSocket connection opened");
+    };
+  
+    chatSocket.onmessage = function(e) {
+      console.log("Received message:", e.data);
+    };
+  
+    chatSocket.onerror = function(e) {
+      console.error("WebSocket error:", e);
+    };
+  
+    chatSocket.onclose = function(e) {
+      console.warn("WebSocket connection closed:", e);
+    };
+  
+    // اختياري: إرسال رسالة اختبارية بعد 2 ثانية
+    setTimeout(() => {
+      if (chatSocket.readyState === WebSocket.OPEN) {
+        chatSocket.send(JSON.stringify({message: "Hello from client!", username: "TestUser"}));
+        console.log("Sent test message");
+      } else {
+        console.warn("WebSocket not open, can't send test message");
+      }
+    }, 2000);
+  </script>
+  
+
 {% endblock %}

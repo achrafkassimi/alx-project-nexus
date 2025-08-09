@@ -20,6 +20,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from graphene_django.views import GraphQLView
 from .schema import schema
+from chat.views import ws_test  # استدعاء الـ view الجديد
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +29,7 @@ urlpatterns = [
     path('feed/', include('feed.urls')),
     path("chat/", include("chat.urls")),
     path("graphql/", GraphQLView.as_view(graphiql=True, schema=schema)),
+    path('test/', ws_test),  # هذا هو رابط اختبار WebSocket
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

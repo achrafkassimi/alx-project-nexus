@@ -41,12 +41,7 @@ INSTALLED_APPS = [
     'users',  # Custom app for user management
     'channels',
     'chat',  # تأكد أن app chat مضافة
-    # 'graphene_django',  # GraphQL support
-    # 'graphql_jwt.refresh_token.apps.RefreshTokenConfig',  # JWT refresh token support
-    # 'graphql_jwt',  # JWT authentication support
 ]
-
-ASGI_APPLICATION = "socialmedia.asgi.application"
 
 
 CHANNEL_LAYERS = {
@@ -57,6 +52,13 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+# # إذا كنت باغي تجرب محلياً بدون Redis
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer"
+#     }
+# }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -173,6 +175,7 @@ AUTHENTICATION_BACKENDS = [
 
 ]
 
+ASGI_APPLICATION = 'socialmedia.asgi.application'
 
 LOGIN_REDIRECT_URL = '/feed/dashboard/'
 LOGOUT_REDIRECT_URL = '/user/login/'
